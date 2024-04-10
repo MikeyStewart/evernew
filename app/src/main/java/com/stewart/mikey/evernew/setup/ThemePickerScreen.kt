@@ -33,12 +33,13 @@ fun ThemePickerScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(32.dp),
-        verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically),
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "Pick your adventure",
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(bottom = 32.dp)
         )
         themeOptions.forEach { theme ->
             PrimaryButton(

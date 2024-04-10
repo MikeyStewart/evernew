@@ -39,10 +39,10 @@ fun HomeScreen(
             text = "A text-based RPG powered by AI",
             color = MaterialTheme.colorScheme.onBackground,
         )
-        Spacer(modifier = Modifier.height(32.dp))
         PrimaryButton(
             text = "Start new game",
-            onClick = start
+            onClick = start,
+            modifier = Modifier.padding(top = 32.dp)
         )
     }
 }
