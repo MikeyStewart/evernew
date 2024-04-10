@@ -65,7 +65,6 @@ fun TextInput(
             modifier = Modifier
                 .padding(end = 16.dp)
                 .weight(1f),
-            leadingIcon = { Text(text = "〉") },
             shape = RectangleShape
         )
 
@@ -84,6 +83,7 @@ fun TextInput(
                     onClick = {
                         if (input.isNotBlank()) {
                             onConfirm(input)
+                            input = ""
                         }
                     },
                     enabled = input.isNotBlank(),
