@@ -25,7 +25,7 @@ class GameViewModel(
         )
     )
 
-    fun summarize(inputText: String) {
+    fun sendMessage(inputText: String) {
         _uiState.value = _uiState.value.copy(loading = true)
 
         viewModelScope.launch {
