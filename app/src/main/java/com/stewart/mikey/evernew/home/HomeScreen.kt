@@ -9,13 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.stewart.mikey.evernew.ui.component.PrimaryButton
 import com.stewart.mikey.evernew.ui.theme.EvernewTheme
 
 @Composable
@@ -40,9 +40,10 @@ fun HomeScreen(
             color = MaterialTheme.colorScheme.onBackground,
         )
         Spacer(modifier = Modifier.height(32.dp))
-        OutlinedButton(onClick = start) {
-            Text(text = "Start new game")
-        }
+        PrimaryButton(
+            text = "Start new game",
+            onClick = start
+        )
     }
 }
 
