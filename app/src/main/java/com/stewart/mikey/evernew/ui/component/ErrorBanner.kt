@@ -22,9 +22,12 @@ import androidx.compose.ui.unit.dp
 import com.stewart.mikey.evernew.ui.theme.EvernewTheme
 
 @Composable
-fun ErrorBanner(text: String) {
+fun ErrorBanner(
+    text: String,
+    modifier: Modifier = Modifier
+) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.error)
             .defaultMinSize(minHeight = 56.dp)
@@ -40,7 +43,6 @@ fun ErrorBanner(text: String) {
         Text(
             text = text,
             color = MaterialTheme.colorScheme.onError,
-            textAlign = TextAlign.Center,
             fontWeight = FontWeight.SemiBold
         )
     }
@@ -49,7 +51,7 @@ fun ErrorBanner(text: String) {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-private fun ErrorMessagePreview() {
+private fun ErrorBannerPreview() {
     EvernewTheme {
         ErrorBanner("Error: something went wrong.")
     }

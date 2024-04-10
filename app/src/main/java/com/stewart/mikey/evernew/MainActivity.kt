@@ -36,9 +36,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.ai.client.generativeai.GenerativeModel
-import com.stewart.mikey.evernew.game.GameScreen
-import com.stewart.mikey.evernew.home.HomeScreen
-import com.stewart.mikey.evernew.setup.ThemePickerScreen
+import com.stewart.mikey.evernew.ui.GameUiState
+import com.stewart.mikey.evernew.ui.GameViewModel
+import com.stewart.mikey.evernew.ui.screen.GameScreen
+import com.stewart.mikey.evernew.ui.screen.HomeScreen
+import com.stewart.mikey.evernew.ui.screen.ThemePickerScreen
 import com.stewart.mikey.evernew.ui.theme.EvernewTheme
 
 class MainActivity : ComponentActivity() {
@@ -54,17 +56,12 @@ class MainActivity : ComponentActivity() {
                         modelName = "gemini-pro",
                         apiKey = BuildConfig.apiKey
                     )
-                    val viewModel = SummarizeViewModel(generativeModel)
+                    val viewModel = GameViewModel(generativeModel)
 
-                    // Simple navigation state
+                    // Simple navigation
                     var navigationDestinationState: NavigationDestination by rememberSaveable {
                         mutableStateOf(NavigationDestination.Home)
                     }
-                    BackHandler {
-                        navigationDestinationState = NavigationDestination.Home
-                    }
-
-                    // Simple navigation
                     AnimatedContent(
                         targetState = navigationDestinationState,
                         label = "navigation"
@@ -84,9 +81,14 @@ class MainActivity : ComponentActivity() {
                             }
 
                             NavigationDestination.Game -> {
-                                GameScreen()
+                                GameScreen(viewModel) { input ->
+                                    viewModel.summarize(input)
+                                }
                             }
                         }
+                    }
+                    BackHandler {
+                        navigationDestinationState = NavigationDestination.Home
                     }
                 }
             }
@@ -96,96 +98,4 @@ class MainActivity : ComponentActivity() {
 
 enum class NavigationDestination {
     Home, ThemePicker, Game
-}
-
-@Composable
-internal fun SummarizeRoute(
-    summarizeViewModel: SummarizeViewModel = viewModel()
-) {
-    val summarizeUiState by summarizeViewModel.uiState.collectAsState()
-
-    SummarizeScreen(summarizeUiState, onSummarizeClicked = { inputText ->
-        summarizeViewModel.summarize(inputText)
-    })
-}
-
-@Composable
-fun SummarizeScreen(
-    uiState: SummarizeUiState = SummarizeUiState.Initial,
-    onSummarizeClicked: (String) -> Unit = {}
-) {
-    var prompt by remember { mutableStateOf("") }
-    Column(
-        modifier = Modifier
-            .padding(all = 8.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        Row {
-            TextField(
-                value = prompt,
-                label = { Text(stringResource(R.string.summarize_label)) },
-                placeholder = { Text(stringResource(R.string.summarize_hint)) },
-                onValueChange = { prompt = it },
-                modifier = Modifier
-                    .weight(8f)
-            )
-            TextButton(
-                onClick = {
-                    if (prompt.isNotBlank()) {
-                        onSummarizeClicked(prompt)
-                    }
-                },
-
-                modifier = Modifier
-                    .weight(2f)
-                    .padding(all = 4.dp)
-                    .align(Alignment.CenterVertically)
-            ) {
-                Text(stringResource(R.string.action_go))
-            }
-        }
-        when (uiState) {
-            SummarizeUiState.Initial -> {
-                // Nothing is shown
-            }
-
-            SummarizeUiState.Loading -> {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .padding(all = 8.dp)
-                        .align(Alignment.CenterHorizontally)
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-
-            is SummarizeUiState.Success -> {
-                Row(modifier = Modifier.padding(all = 8.dp)) {
-                    Icon(
-                        Icons.Outlined.Person,
-                        contentDescription = "Person Icon"
-                    )
-                    Text(
-                        text = uiState.outputText,
-                        modifier = Modifier.padding(horizontal = 8.dp)
-                    )
-                }
-            }
-
-            is SummarizeUiState.Error -> {
-                Text(
-                    text = uiState.errorMessage,
-                    color = Color.Red,
-                    modifier = Modifier.padding(all = 8.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-@Preview(showSystemUi = true)
-fun SummarizeScreenPreview() {
-    SummarizeScreen()
 }
