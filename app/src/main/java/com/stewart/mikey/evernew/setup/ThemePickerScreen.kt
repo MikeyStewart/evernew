@@ -46,7 +46,7 @@ fun ThemePickerScreen(
                 text = theme,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // TODO
+                onThemeClick(theme)
             }
         }
     }

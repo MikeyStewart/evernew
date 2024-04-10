@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.ai.client.generativeai.GenerativeModel
+import com.stewart.mikey.evernew.game.GameScreen
 import com.stewart.mikey.evernew.home.HomeScreen
 import com.stewart.mikey.evernew.setup.ThemePickerScreen
 import com.stewart.mikey.evernew.ui.theme.EvernewTheme
@@ -83,7 +84,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             NavigationDestination.Game -> {
-                                // TODO: game screen
+                                GameScreen()
                             }
                         }
                     }
