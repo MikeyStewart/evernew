@@ -1,4 +1,4 @@
-package com.stewart.mikey.evernew.ui.screen
+package com.stewart.mikey.evernew.ui.themepicker
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -7,26 +7,39 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.stewart.mikey.evernew.ui.component.ErrorBanner
 import com.stewart.mikey.evernew.ui.component.PrimaryButton
 import com.stewart.mikey.evernew.ui.theme.EvernewTheme
 
 @Composable
 fun ThemePickerScreen(
-    onThemeClick: (String) -> Unit
+    viewModel: ThemePickerViewModel,
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    ThemePickerScreenUi(uiState)
+}
+
+@Composable
+fun ThemePickerScreenUi(
+    uiState: ThemePickerUiState,
 ) {
     // TODO: Generate theme options with *AI*
-    val themeOptions = listOf(
-        "Space adventure",
-        "Mushroom kingdom uprising",
-        "Battle of the capybaras"
-    )
+//    val themeOptions = listOf(
+//        "Space adventure",
+//        "Mushroom kingdom uprising",
+//        "Battle of the capybaras"
+//    )
 
     Column(
         modifier = Modifier
@@ -41,12 +54,19 @@ fun ThemePickerScreen(
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(bottom = 32.dp)
         )
-        themeOptions.forEach { theme ->
-            PrimaryButton(
-                text = theme,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                onThemeClick(theme)
+
+        if (uiState.loading) {
+            CircularProgressIndicator()
+        } else if (uiState.errorMessage != null) {
+            ErrorBanner(text = uiState.errorMessage)
+        } else {
+            uiState.themes.forEach { theme ->
+                PrimaryButton(
+                    text = theme.title,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    // TODO: on theme click
+                }
             }
         }
     }
@@ -57,6 +77,6 @@ fun ThemePickerScreen(
 @Composable
 private fun ThemePickerScreenPreview() {
     EvernewTheme {
-        ThemePickerScreen {}
+        ThemePickerScreenUi(uiState = ThemePickerUiState())
     }
 }

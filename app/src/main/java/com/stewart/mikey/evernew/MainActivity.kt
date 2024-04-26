@@ -14,11 +14,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.google.ai.client.generativeai.GenerativeModel
-import com.stewart.mikey.evernew.ui.GameViewModel
-import com.stewart.mikey.evernew.ui.screen.GameScreen
-import com.stewart.mikey.evernew.ui.screen.HomeScreen
-import com.stewart.mikey.evernew.ui.screen.ThemePickerScreen
+import com.stewart.mikey.evernew.ui.game.GameViewModel
+import com.stewart.mikey.evernew.ui.game.GameScreen
+import com.stewart.mikey.evernew.ui.home.HomeScreen
+import com.stewart.mikey.evernew.ui.themepicker.ThemePickerScreen
 import com.stewart.mikey.evernew.ui.theme.EvernewTheme
+import com.stewart.mikey.evernew.ui.themepicker.ThemePickerViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +34,6 @@ class MainActivity : ComponentActivity() {
                         modelName = "gemini-pro",
                         apiKey = BuildConfig.apiKey
                     )
-                    val viewModel = GameViewModel(generativeModel)
 
                     // Simple navigation
                     var navigationDestinationState: NavigationDestination by rememberSaveable {
@@ -51,15 +51,12 @@ class MainActivity : ComponentActivity() {
                             }
 
                             NavigationDestination.ThemePicker -> {
-                                ThemePickerScreen { selectedTheme ->
-                                    // TODO: store/use selected theme
-                                    navigationDestinationState = NavigationDestination.Game
-                                }
+                                ThemePickerScreen(ThemePickerViewModel(generativeModel))
                             }
 
                             NavigationDestination.Game -> {
-                                GameScreen(viewModel) { input ->
-                                    viewModel.sendMessage(input)
+                                GameScreen(GameViewModel(generativeModel)) {
+                                    // TODO: handle input (move into Game screen)
                                 }
                             }
                         }
@@ -76,3 +73,6 @@ class MainActivity : ComponentActivity() {
 enum class NavigationDestination {
     Home, ThemePicker, Game
 }
+
+private val startingPrompt =
+    "{START} Write in introduction to the game including some main characters and locations based on the theme of: "

@@ -1,8 +1,9 @@
-package com.stewart.mikey.evernew.ui
+package com.stewart.mikey.evernew.ui.game
 
 import com.google.ai.client.generativeai.type.Content
 
 data class GameUiState(
+    val gameTheme: String? = null,
     val history: List<Content> = emptyList(),
     val loading: Boolean = false,
     val errorMessage: String? = null,

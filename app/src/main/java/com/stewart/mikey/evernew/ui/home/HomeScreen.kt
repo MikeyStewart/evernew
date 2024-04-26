@@ -1,4 +1,4 @@
-package com.stewart.mikey.evernew.ui.screen
+package com.stewart.mikey.evernew.ui.home
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
