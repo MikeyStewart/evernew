@@ -24,17 +24,21 @@ import com.stewart.mikey.evernew.ui.themepicker.ThemePickerViewModel
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // TODO: DI (future improvement)
+        val generativeModel = GenerativeModel(
+            modelName = "gemini-pro",
+            apiKey = BuildConfig.apiKey
+        )
+        val themePickerViewModel = ThemePickerViewModel(generativeModel)
+        val gameViewModel = GameViewModel(generativeModel)
+
         setContent {
             EvernewTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    val generativeModel = GenerativeModel(
-                        modelName = "gemini-pro",
-                        apiKey = BuildConfig.apiKey
-                    )
-
                     // Simple navigation
                     var navigationDestinationState: NavigationDestination by rememberSaveable {
                         mutableStateOf(NavigationDestination.Home)
@@ -51,12 +55,15 @@ class MainActivity : ComponentActivity() {
                             }
 
                             NavigationDestination.ThemePicker -> {
-                                ThemePickerScreen(ThemePickerViewModel(generativeModel))
+                                ThemePickerScreen(themePickerViewModel) { theme ->
+                                    gameViewModel.sendMessage("Create the introduction to a text based RPG based on ${theme.title}")
+                                    navigationDestinationState = NavigationDestination.Game
+                                }
                             }
 
                             NavigationDestination.Game -> {
-                                GameScreen(GameViewModel(generativeModel)) {
-                                    // TODO: handle input (move into Game screen)
+                                GameScreen(gameViewModel) {
+                                    // TODO: handle input (move code into Game screen?)
                                 }
                             }
                         }

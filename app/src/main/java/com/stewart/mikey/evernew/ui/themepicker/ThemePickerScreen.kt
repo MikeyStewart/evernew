@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.stewart.mikey.evernew.domain.Theme
 import com.stewart.mikey.evernew.ui.component.ErrorBanner
 import com.stewart.mikey.evernew.ui.component.PrimaryButton
 import com.stewart.mikey.evernew.ui.theme.EvernewTheme
@@ -24,23 +25,18 @@ import com.stewart.mikey.evernew.ui.theme.EvernewTheme
 @Composable
 fun ThemePickerScreen(
     viewModel: ThemePickerViewModel,
+    onThemeClick: (Theme) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    ThemePickerScreenUi(uiState)
+    ThemePickerScreenUi(uiState, onThemeClick)
 }
 
 @Composable
 fun ThemePickerScreenUi(
     uiState: ThemePickerUiState,
+    onThemeClick: (Theme) -> Unit,
 ) {
-    // TODO: Generate theme options with *AI*
-//    val themeOptions = listOf(
-//        "Space adventure",
-//        "Mushroom kingdom uprising",
-//        "Battle of the capybaras"
-//    )
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -65,7 +61,7 @@ fun ThemePickerScreenUi(
                     text = theme.title,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // TODO: on theme click
+                    onThemeClick(theme)
                 }
             }
         }
@@ -77,6 +73,6 @@ fun ThemePickerScreenUi(
 @Composable
 private fun ThemePickerScreenPreview() {
     EvernewTheme {
-        ThemePickerScreenUi(uiState = ThemePickerUiState())
+        ThemePickerScreenUi(uiState = ThemePickerUiState()) {}
     }
 }

@@ -2,6 +2,7 @@ package com.stewart.mikey.evernew.ui.game
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.BlendMode
@@ -21,13 +23,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.ai.client.generativeai.type.Content
 import com.google.ai.client.generativeai.type.TextPart
 import com.google.ai.client.generativeai.type.asTextOrNull
-import com.stewart.mikey.evernew.ui.game.GameUiState
-import com.stewart.mikey.evernew.ui.game.GameViewModel
 import com.stewart.mikey.evernew.ui.component.ErrorBanner
 import com.stewart.mikey.evernew.ui.component.TextInput
 import com.stewart.mikey.evernew.ui.theme.EvernewTheme
@@ -59,17 +60,24 @@ fun GameScreenUi(
             modifier = Modifier.weight(1f),
         ) {
             items(uiState.history) { content ->
-                Text(
-                    text = content.parts.firstNotNullOf { it.asTextOrNull() },
-                    color = MaterialTheme.colorScheme.onBackground,
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
                             color = if (content.role == "user") Color.Gray.copy(alpha = 0.075f)
                             else MaterialTheme.colorScheme.background
                         )
-                        .padding(16.dp)
-                )
+                ) {
+                    Text(
+                        text = content.parts.firstNotNullOf { it.asTextOrNull() },
+                        color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = if (content.role == "user") TextAlign.End else TextAlign.Start,
+                        modifier = Modifier
+                            .align(if (content.role == "user") Alignment.CenterEnd else Alignment.CenterStart)
+                            .padding(16.dp)
+                            .fillMaxWidth(0.8f)
+                    )
+                }
             }
             uiState.errorMessage?.let { error ->
                 item {
@@ -84,51 +92,6 @@ fun GameScreenUi(
             onConfirmInput(input)
         }
     }
-//    if (uiState.history.isEmpty()) {
-//        // Full screen loading on initial game start
-//        Box(
-//            modifier = Modifier.fillMaxSize(),
-//            contentAlignment = Alignment.Center
-//        ) {
-//            CircularProgressIndicator()
-//        }
-//    } else {
-//        Column(
-//            modifier = Modifier
-//                .imePadding()
-//                .fillMaxSize()
-//                .background(MaterialTheme.colorScheme.background)
-//        ) {
-//            LazyColumn(
-//                modifier = Modifier.weight(1f),
-//            ) {
-//                items(uiState.history) { content ->
-//                    Text(
-//                        text = content.parts.firstNotNullOf { it.asTextOrNull() },
-//                        color = MaterialTheme.colorScheme.onBackground,
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .background(
-//                                color = if (content.role == "user") Color.Gray.copy(alpha = 0.075f)
-//                                else MaterialTheme.colorScheme.background
-//                            )
-//                            .padding(16.dp)
-//                    )
-//                }
-//                uiState.errorMessage?.let { error ->
-//                    item {
-//                        ErrorBanner(text = error)
-//                    }
-//                }
-//            }
-//            TextInput(
-//                modifier = Modifier.padding(16.dp),
-//                loading = uiState.loading
-//            ) { input ->
-//                onConfirmInput(input)
-//            }
-//        }
-//    }
 }
 
 fun Modifier.fadingBottomEdge() = this
